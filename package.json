@@ -1,0 +1,25 @@
+{
+  "name": "merumu",
+  "version": "1.0.0",
+  "description": "Merumu is a interactive music bot but with a twist as i implemnted moderation and fun commands!",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moonieqt/Merumu.git"
+  },
+  "keywords": [],
+  "author": "Moonie",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moonieqt/Merumu/issues"
+  },
+  "homepage": "https://github.com/moonieqt/Merumu#readme",
+  "dependencies": {
+    "discord.js": "^13.6.0",
+    "mongodb": "^4.4.1"
+  }
+}

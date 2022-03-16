@@ -2,5 +2,6 @@
    "prefix" : "",
    "owner2" : "",
    "api" : "",
-   "hasteurl": ""
+   "hasteurl": "",
+   "mongodbUri": ""
 }
