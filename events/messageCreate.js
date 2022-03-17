@@ -39,6 +39,10 @@ const inviteHosts = [
 export default {
   name: 'messageCreate',
   once: false,
+  /**
+   * @param {import('discord.js').Client} client
+   * @param {import('discord.js').Message} message
+   */
   async execute(client, message) {
     if (message.author.bot) return;
 

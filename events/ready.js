@@ -1,6 +1,9 @@
 export default {
   name: 'ready',
   once: true,
+  /**
+   * @param {import('discord.js').Client} client
+   */
   async execute(client) {
     await client.db.connect();
 
@@ -53,7 +56,7 @@ export default {
       }
     }, 10000);
 
-    await client.user.setActivity({ name: '/ commands', type: 'WATCHING' });
+    client.user.setActivity({ name: '/ commands', type: 'WATCHING' });
 
     console.log(`Logged in as ${client.user.tag}`);
   }

@@ -67,6 +67,10 @@ export default {
       }
     ]
   },
+  /**
+   * @param {import('discord.js').Client} client
+   * @param {import('discord.js').CommandInteraction} interaction
+   */
   async execute(client, interaction) {
     const subcommand = interaction.options.getSubcommand();
 
