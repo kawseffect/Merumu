@@ -4,6 +4,10 @@ export default {
   async execute(client) {
     await client.db.connect();
 
+    await client.application.commands.set(
+      client.commands.map((command) => command.data)
+    );
+
     setInterval(async () => {
       const mutes_ = client.db.db.collection('mutes');
       const mutes = await mutes_.find().toArray();
