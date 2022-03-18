@@ -37,93 +37,93 @@ export default class db {
   /**
    * @returns {number} The user's new total warning point value.
    */
-  async addWarning(guild, user, d, reason, issuer) {
-    let guild = await this.updateGuild(guild);
+  async addWarning(guildId, userId, d, reason, issuer) {
+    let guild = await this.updateGuild(guildId);
 
-    guild = guild.userWarnings.some((warning) => warning.id === user)
+    guild = guild.userWarnings.some((warning) => warning.id === userId)
       ? await this.updateGuild(
-          guild,
-          { id: guild },
+          guildId,
+          { id: guildId },
           {
             $push: {
               'userWarnings.$[id].warnings': {
                 $each: [{ d, reason, issuer }]
               }
             },
-            $set: { lastUser: user }
+            $set: { lastUser: userId }
           },
           {
-            arrayFilters: [{ 'id.id': user }],
+            arrayFilters: [{ 'id.id': userId }],
             returnDocument: 'after'
           }
         )
       : await this.updateGuild(
-          guild,
-          { id: guild },
+          guildId,
+          { id: guildId },
           {
             $push: {
               userWarnings: {
-                $each: [{ id: user, warnings: [{ d, reason, issuer }] }]
+                $each: [{ id: userId, warnings: [{ d, reason, issuer }] }]
               }
             },
-            $set: { lastUser: user }
+            $set: { lastUser: userId }
           },
           { returnDocument: 'after' }
         );
 
     return guild.userWarnings
-      .find((warning) => warning.id === user)
+      .find((warning) => warning.id === userId)
       .warnings.reduce((all, val) => all + val.points, 0);
   }
 
-  async getWarnings(guild, user, pos) {
-    const guild = await this.updateGuild(guild);
+  async getWarnings(guildId, userId, pos) {
+    const guild = await this.updateGuild(guildId);
 
     const { warnings } = guild.userWarnings.find(
-      (warning) => warning.id === user
+      (warning) => warning.id === userId
     );
 
     return pos != undefined ? warnings[pos] : warnings;
   }
 
-  async removeWarning(guild, user, pos) {
-    const guild = await this.updateGuild(guild);
+  async removeWarning(guildId, userId, pos) {
+    const guild = await this.updateGuild(guildId);
 
-    let warnings = guild.userWarnings.find((warning) => warning.id === user);
+    let warnings = guild.userWarnings.find((warning) => warning.id === userId);
 
-    if (warnings === undefined) return user;
+    if (warnings === undefined) return userId;
 
     ({ warnings } = warnings);
 
     const warning = warnings[pos];
 
-    if (warning === undefined) return user;
+    if (warning === undefined) return userId;
 
     await this.updateGuild(
-      guild,
-      { id: guild },
+      guildId,
+      { id: guildId },
       {
         $set: {
           [`userWarnings.$[id].warnings.${pos}`]: null
         }
       },
       {
-        arrayFilters: [{ 'id.id': user }]
+        arrayFilters: [{ 'id.id': userId }]
       }
     );
     await this.updateGuild(
-      guild,
-      { id: guild },
+      guildId,
+      { id: guildId },
       {
         $pull: {
           [`userWarnings.$[id].warnings.${pos}`]: null
         }
       },
       {
-        arrayFilters: [{ 'id.id': user }]
+        arrayFilters: [{ 'id.id': userId }]
       }
     );
 
-    return user;
+    return userId;
   }
 }

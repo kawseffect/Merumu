@@ -43,6 +43,6 @@ export default {
       .setFooter({ text: 'Pong command info' })
       .setTimestamp();
 
-    await reply.edit({ embeds: [embed] });
+    await reply.edit({ embeds: [embed_] });
   }
 };
