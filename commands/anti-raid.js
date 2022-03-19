@@ -91,7 +91,7 @@ export default {
    * @param {import('discord.js').CommandInteraction} interaction
    */
   async execute(client, interaction) {
-    const subcommandGroup = interaction.options.getSubcommandGroup();
+    const subcommandGroup = interaction.options.getSubcommandGroup(false);
     const subcommand = interaction.options.getSubcommand();
 
     if (subcommandGroup === 'set') {
