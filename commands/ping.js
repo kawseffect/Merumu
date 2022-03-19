@@ -18,7 +18,7 @@ export default {
 
     let perf = performance.now();
 
-    await client.db.collection('ping').findOne();
+    await client.db.db.collection('ping').findOne();
 
     perf = performance.now() - perf;
 

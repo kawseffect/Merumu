@@ -10,11 +10,11 @@ const onEmbed = new MessageEmbed()
   .setDescription(
     `<:MeruYes:952435870491893810> | ${bold(
       italic('Enabled the Auto-Moderation feature!')
-    )}\n\n${bold('What is the automod feature?')}\n${italic(
-      "The automod feature is a command for moderators so they don't have to moderate everything and take a little weight off their backs!"
+    )}\n\n${bold('What is the auto-mod feature?')}\n${italic(
+      "The auto-mod feature is a command for moderators so they don't have to moderate everything and take a little weight off their backs!"
     )}\n\n${bold('Want to turn this feature off?')}\n${codeBlock(
       'txt',
-      '/automod set mode:off'
+      '/auto-mod set mode:off'
     )}`
   );
 const offEmbed = new MessageEmbed()
@@ -22,11 +22,11 @@ const offEmbed = new MessageEmbed()
   .setDescription(
     `<:MeruNo:952435833649106964> | ${bold(
       italic('Disabled the Auto-Moderation feature!')
-    )}\n\n${bold('What is the automod feature?')}\n${italic(
-      "The automod feature is a command for moderators so they don't have to moderate everything and take a little weight off their backs!"
+    )}\n\n${bold('What is the auto-mod feature?')}\n${italic(
+      "The auto-mod feature is a command for moderators so they don't have to moderate everything and take a little weight off their backs!"
     )}\n\n${bold('Want to turn this feature on?')}\n${codeBlock(
       'txt',
-      '/automod set mode:on'
+      '/auto-mod set mode:on'
     )}`
   );
 const offStr = 'Off | <:MeruNo:952435833649106964>';
@@ -34,7 +34,7 @@ const offStr = 'Off | <:MeruNo:952435833649106964>';
 export default {
   data: {
     name: 'auto-mod',
-    description: 'Enables/Disables the auto-mod features.',
+    description: 'Configures the auto-mod features.',
     options: [
       {
         name: 'set',
@@ -44,16 +44,16 @@ export default {
           {
             name: 'mode',
             description: 'The auto-mod mode.',
-            type: 'BOOLEAN',
+            type: 'STRING',
             choices: [
               {
                 name: 'on',
-                value: true
+                value: 'on'
               },
               {
                 name: 'off',
 
-                value: false
+                value: 'off'
               }
             ],
             required: true
@@ -86,7 +86,7 @@ export default {
         return;
       }
 
-      const enable = interaction.options.getBoolean('mode');
+      const enable = interaction.options.getString('mode') === 'on';
 
       await client.db.updateGuild(
         interaction.guild.id,
@@ -110,7 +110,7 @@ export default {
                 }`
               )
             )
-          )}\n\n${quote(bold(italic('The automod features:')))}\n${italic(
+          )}\n\n${quote(bold(italic('The auto-mod features:')))}\n${italic(
             'badwords, message-spam and invite-links'
           )}\n\n${quote(bold(italic('Feature statuses:')))}\n${bold(
             `Message spam filter is currently set to ${modSpam ?? offStr}`
@@ -121,7 +121,7 @@ export default {
           )}\n${bold(
             `Badwords filter is currently set to ${modBadWord ?? offStr}`
           )}\n\n${italic(
-            'If you want to enable nay of the features just do'
+            'If you want to enable any of the features just do'
           )}\n${codeBlock(
             'txt',
             '/<feature> set mode:on/off'
@@ -129,7 +129,7 @@ export default {
             'Want to enable automod?'
           )} Use\n${codeBlock(
             'txt',
-            '/automod set mode:on/off'
+            '/auto-mod set mode:on/off'
           )}\nTo toggle it on or off!`
         );
 
