@@ -44,16 +44,16 @@ export default {
           {
             name: 'mode',
             description: 'The auto-mod mode.',
-            type: 'BOOLEAN',
+            type: 'STRING',
             choices: [
               {
                 name: 'on',
-                value: true
+                value: 'on'
               },
               {
                 name: 'off',
 
-                value: false
+                value: 'off'
               }
             ],
             required: true
@@ -86,7 +86,7 @@ export default {
         return;
       }
 
-      const enable = interaction.options.getBoolean('mode');
+      const enable = interaction.options.getString('mode') === 'on';
 
       await client.db.updateGuild(
         interaction.guild.id,
