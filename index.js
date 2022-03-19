@@ -20,7 +20,7 @@ if (existsSync('./commands')) {
   for (const file of files) {
     const { default: command } = await import(`./commands/${file}`);
 
-    client.commands.set(command.name, command);
+    client.commands.set(command.data.name, command);
   }
 }
 
