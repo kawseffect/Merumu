@@ -112,7 +112,7 @@ export default {
         await client.db.updateGuild(
           interaction.guild.id,
           { id: interaction.guild.id },
-          { $set: { autoRaid: enable } }
+          { $set: { antiRaid: enable } }
         );
 
         await interaction.reply({ embeds: [enable ? onEmbed : offEmbed] });
