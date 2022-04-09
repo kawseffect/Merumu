@@ -14,7 +14,7 @@ const onEmbed = new MessageEmbed()
       'The anti-raid features are custom commands built to help prevent raids from taking place and stop them right on their tracks, from closing the entire server so no one can speak to join-bans to instantly ban users on join!'
     )}\n\n${bold('Want to turn this feature off?')}\n${codeBlock(
       'txt',
-      '/auto-raid set mode:off'
+      '/antiraid set mode:off'
     )}`
   );
 const offEmbed = new MessageEmbed()
@@ -26,14 +26,14 @@ const offEmbed = new MessageEmbed()
       'The anti-raid features are custom commands built to help prevent raids from taking place and stop them right on their tracks, from closing the entire server so no one can speak to join-bans to instantly ban users on join!'
     )}\n\n${bold('Want to turn this feature on?')}\n${codeBlock(
       'txt',
-      '/auto-raid set mode:off'
+      '/antiraid set mode:off'
     )}`
   );
 const offStr = 'Deactivated | <:MeruNo:952435833649106964>';
 
 export default {
   data: {
-    name: 'auto-raid',
+    name: 'antiraid',
     description: 'Configures the anti-raid feature.',
     options: [
       {
@@ -81,7 +81,7 @@ export default {
       },
       {
         name: 'show',
-        description: 'Shows the currnt auto-raid feature mode.',
+        description: 'Shows the currnt antiraid feature mode.',
         type: 'SUB_COMMAND'
       }
     ]
@@ -93,9 +93,11 @@ export default {
   async execute(client, interaction) {
     const subcommandGroup = interaction.options.getSubcommandGroup(false);
     const subcommand = interaction.options.getSubcommand();
+    
 
     if (subcommandGroup === 'set') {
       if (subcommand === 'mode') {
+
         if (
           !interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])
         ) {
@@ -103,20 +105,33 @@ export default {
             content: 'You need to be an admin or a mod to use this command.',
             ephemeral: true
           });
-
+  
           return;
         }
+        
 
         const enable = interaction.options.getString('mode') === 'on';
 
         await client.db.updateGuild(
           interaction.guild.id,
           { id: interaction.guild.id },
-          { $set: { antiRaid: enable } }
+          { $set: { antiRaid: 'Enabled | <:MeruYes:952435870491893810> ' } }
         );
 
         await interaction.reply({ embeds: [enable ? onEmbed : offEmbed] });
       } else if (subcommand === 'role') {
+
+        if (
+          !interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])
+        ) {
+          await interaction.reply({
+            content: 'You need to be an admin or a mod to use this command.',
+            ephemeral: true
+          });
+  
+          return;
+        }
+
         const role = interaction.options.getRole('role');
 
         await client.db.updateGuild(
@@ -134,7 +149,7 @@ export default {
         await interaction.reply({ embeds: [embed] });
       }
     } else if (subcommand === 'show') {
-      const { antiRaid, raidClose, raidUnder, raidJoin, raidSlow } =
+      const { antiRaid, raidLock, raidJoin, raidSlow } =
         await client.db.updateGuild(interaction.guild.id);
 
       const embed = new MessageEmbed()
@@ -143,13 +158,11 @@ export default {
           `${quote(
             bold(italic(`The Anti-Raid is currently ${antiRaid ?? offStr}`))
           )}\n\n${quote(bold(italic('The Anti-Raid features:')))}\n${italic(
-            'close/open, under-raid, join-ban, slowmode, and lock/unlock'
+            'join-ban, slowmode, and lock/unlock'
           )}\n\n${quote(
             bold(italic('The Anti-Raid feature statuses:'))
           )}\n${bold(
-            `Concealed mode is currently ${raidClose ?? offStr}`
-          )}\n${bold(
-            `Under-raid mode is currently ${raidUnder ?? offStr}`
+            `Lockdown mode is currently ${raidLock ?? offStr}`
           )}\n${bold(
             `Join-ban mode is currently ${raidJoin ?? offStr}`
           )}\n${bold(
