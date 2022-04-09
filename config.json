@@ -1,7 +1,7 @@
-{ 
-   "prefix" : "",
-   "owner2" : "",
-   "api" : "",
-   "hasteurl": "",
-   "mongodbUri": ""
+{
+  "prefix": "",
+  "owner2": "",
+  "api": "",
+  "hasteurl": "",
+  "mongodbUri": ""
 }

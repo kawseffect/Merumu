@@ -26,6 +26,7 @@ discord.js v12.5.1
 ```
 
 ## Contributing
+
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
@@ -33,5 +34,5 @@ Please make sure to update tests as appropriate.
 Also please do NOT steal code from here, yes the bot is open source but any duplicates willl be removed accordingly , you can however get commands from here but if you do modify them so you can tell a difference.
 
 ## License
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)

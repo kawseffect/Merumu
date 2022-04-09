@@ -93,11 +93,9 @@ export default {
   async execute(client, interaction) {
     const subcommandGroup = interaction.options.getSubcommandGroup(false);
     const subcommand = interaction.options.getSubcommand();
-    
 
     if (subcommandGroup === 'set') {
       if (subcommand === 'mode') {
-
         if (
           !interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])
         ) {
@@ -105,10 +103,9 @@ export default {
             content: 'You need to be an admin or a mod to use this command.',
             ephemeral: true
           });
-  
+
           return;
         }
-        
 
         const enable = interaction.options.getString('mode') === 'on';
 
@@ -120,7 +117,6 @@ export default {
 
         await interaction.reply({ embeds: [enable ? onEmbed : offEmbed] });
       } else if (subcommand === 'role') {
-
         if (
           !interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])
         ) {
@@ -128,7 +124,7 @@ export default {
             content: 'You need to be an admin or a mod to use this command.',
             ephemeral: true
           });
-  
+
           return;
         }
 
