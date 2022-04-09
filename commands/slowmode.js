@@ -10,7 +10,7 @@ const onEmbed = new MessageEmbed()
   .setDescription(
     `<:MeruYes:952435870491893810> | ${bold(
       italic('Enabled the Slowmode feature!')
-    )}\n\n${bold('What is slowmode feature?')}\n${italic(
+    )}\n\n${bold('What is the slowmode feature?')}\n${italic(
       'The slowmode feature is part of the anti-raid commands and category, this command slows down the text channel with the specified amount of seconds'
     )}\n\n${bold('Want to turn this feature off?')}\n${codeBlock(
       'txt',
@@ -22,7 +22,7 @@ const offEmbed = new MessageEmbed()
   .setDescription(
     `<:MeruNo:952435833649106964> | ${bold(
       italic('Disabled the Slowmode feature!')
-    )}\n\n${bold('What is slowmode feature?')}\n${italic(
+    )}\n\n${bold('What is the slowmode feature?')}\n${italic(
       'The slowmode feature is part of the anti-raid commands and category, this command slows down the text channel with the specified amount of seconds'
     )}\n\n${bold('Want to turn this feature on?')}\n${codeBlock(
       'txt',
@@ -38,15 +38,7 @@ export default {
       {
         name: 'enable',
         description: 'Enables the slowmode feature.',
-        type: 'SUB_COMMAND',
-        options: [
-          {
-            name: 'duration',
-            description: 'The slowmode duration.',
-            type: 'INTEGER',
-            required: true
-          }
-        ]
+        type: 'SUB_COMMAND'
       },
       {
         name: 'disable',
@@ -91,7 +83,7 @@ export default {
       await client.db.updateGuild(
         interaction.guild.id,
         { id: interaction.guild.id },
-        { $set: { raidSlow: true } }
+        { $set: { raidSlow: 'Enabled | <:MeruYes:952435870491893810>' } }
       );
 
       const ok = await interaction.channel
@@ -105,7 +97,7 @@ export default {
       await client.db.updateGuild(
         interaction.guild.id,
         { id: interaction.guild.id },
-        { $set: { raidSlow: false } }
+        { $set: { raidSlow: 'Deactivated | <:MeruNo:952435833649106964>' } }
       );
 
       const ok = await interaction.channel
