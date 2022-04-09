@@ -37,23 +37,60 @@ const offEmbed = new MessageEmbed()
       description: 'Configures the lockdown feature.',
       options: [
         {
-          name: 'enable',
-          description: 'Enables the lockdown feature.',
-          type: 'SUB_COMMAND'
-        },
-        {
-          name: 'disable',
-          description: 'Disables the lockdown feature.',
-          type: 'SUB_COMMAND'
-        }
+          name: 'set',
+          description: 'Sets the lockdown feature configurations.',
+          type: 'SUB_COMMAND_GROUP',
+          options: [
+            {
+              name: 'mode',
+              description: 'Sets the lockdown mode.',
+              type: 'SUB_COMMAND',
+              options: [
+                {
+                  name: 'mode',
+                  description: 'The lockdown feature mode.',
+                  type: 'STRING',
+                  choices: [
+                    {
+                      name: 'on',
+                      value: 'on'
+                    },
+                    {
+                      name: 'off',
+                      value: 'off'
+                    }
+                  ],
+                  required: true
+                }
+              ]
+            }
       ]
+    }
+  ]
     },
     /**
      * @param {import('discord.js').Client} client
      * @param {import('discord.js').CommandInteraction} interaction
      */
     async execute(client, interaction) {
-      const { role } = await client.db.updateGuild(interaction.guild.id);
+      const { lockdownRole } = await client.db
+  .updateGuild(interaction.guild.id);
+
+  const subcommandGroup = interaction.options.getSubcommandGroup(false);
+    const subcommand = interaction.options.getSubcommand();
+
+    if (subcommandGroup === 'set') {
+      if (subcommand === 'mode') {
+        if (
+          !interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])
+        ) {
+          await interaction.reply({
+            content: 'You need to be an admin or a mod to use this command.',
+            ephemeral: true
+          });
+
+          return;
+        }
 
       if (!interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])) {
         await interaction.reply({
@@ -63,56 +100,51 @@ const offEmbed = new MessageEmbed()
   
         return;
       }
+      const enable = interaction.options.getString('mode') === 'on';
+
+      if(enable) {
+
+        await interaction.reply({ embeds: [ onEmbed] });
   
-      const subcommand = interaction.options.getSubcommand();
-  
-      if (subcommand === 'enable') {
-        const { antiRaid } = await client.db.updateGuild(interaction.guild.id);
-  
-        if (!antiRaid) {
-          const embed = new MessageEmbed()
-            .setColor(0xff3636)
-            .setDescription(
-              '<:MeruNo:952435833649106964> | Please enable the antiraid feature first before using this command!'
-            );
-  
-          await interaction.reply({ embeds: [embed] });
-  
-          return;
-        }
   
         await client.db.updateGuild(
           interaction.guild.id,
           { id: interaction.guild.id },
-          { $set: { raidLock: 'On | <:MeruYes:952435870491893810> ' } }
+          { $set: { raidLock: 'Enabled | <:MeruYes:952435870491893810> ' } }
         );
   
-        const ok = await interaction.channel.permissionOverwrites.create(role, {
-          SEND_MESSAGES: false
+        const ok = await interaction.channel.permissionOverwrites.create(lockdownRole, { SEND_MESSAGES: false })
+        .catch(error => {
+          console.log(error)
         })
           
           .catch(() => null);
   
         if (ok === null) return;
-  
-        await interaction.reply({ embeds: [onEmbed] });
-      } else if (subcommand === 'disable') {
+      }else if (!enable) {
+
+        await interaction.reply({ embeds: [ offEmbed] });
+
         await client.db.updateGuild(
           interaction.guild.id,
           { id: interaction.guild.id },
-          { $set: { raidLock: 'Off | <:MeruNo:952435833649106964>' } }
+          { $set: { raidLock: 'Deactivated | <:MeruNo:952435833649106964>' } }
         );
   
         
-        const ok = await interaction.channel.permissionOverwrites.create(role, {
-          SEND_MESSAGES: true
+        const ok = await interaction.channel.permissionOverwrites.create(lockdownRole, { SEND_MESSAGES: true })
+        .catch(error => {
+          console.log(error)
         })
         .catch(() => null);
 
       if (ok === null) return;
 
-
-        await interaction.reply({ embeds: [offEmbed] });
       }
+
+      } 
+    }
+      
     }
   }
+  
