@@ -46,13 +46,15 @@ export default {
   async execute(client, message) {
     if (message.author.bot) return;
 
-    if (users.has(message.author.id))
+    const key = `${message.guild.id}_${message.channel.id}_${message.author.id}`;
+
+    if (users.has(key))
       mod: {
-        const { moderate } = await client.db.updateGuild(message.guild.id);
+        const { automod } = await client.db.updateGuild(message.guild.id);
 
-        if (!moderate) break mod;
+        if (!automod) break mod;
 
-        const userData = users.get(message.author.id);
+        const userData = users.get(key);
         const difference =
           message.createdTimestamp - userData.lastMessageTimestamp;
 
@@ -62,10 +64,10 @@ export default {
           userData.messageCount = 1;
           userData.lastMessageTimestamp = message.createdTimestamp;
           userData.timer = setTimeout(() => {
-            users.delete(message.author.id);
+            users.delete(key);
           }, TIME)[Symbol.toPrimitive]();
 
-          users.set(message.author.id, userData);
+          users.set(key, userData);
         }
 
         if (++userData.messageCount === LIMIT) {
@@ -77,7 +79,7 @@ export default {
 
           await message.reply({ embeds: [embed] });
 
-          const userData_ = users.get(message.author.id);
+          const userData_ = users.get(key);
 
           if (userData_.isWarned)
             muteUser: {
@@ -141,14 +143,15 @@ export default {
                   .catch(() => undefined);
               }, 1_200_000);
             }
-        } else users.set(message.author.id, userData);
+          else userData_.isWarned = true;
+        } else users.set(key, userData);
       }
     else {
       const timer = setTimeout(() => {
-        users.delete(message.author.id);
+        users.delete(key);
       }, 1_000_000)[Symbol.toPrimitive]();
 
-      users.set(message.author.id, {
+      users.set(key, {
         messageCount: 1,
         lastMessageTimestamp: message.createdTimestamp,
         timer

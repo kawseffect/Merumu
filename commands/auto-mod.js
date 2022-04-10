@@ -33,7 +33,7 @@ const offStr = 'Off | <:MeruNo:952435833649106964>';
 
 export default {
   data: {
-    name: 'auto-mod',
+    name: 'automod',
     description: 'Configures the auto-mod features.',
     options: [
       {
@@ -91,7 +91,7 @@ export default {
       await client.db.updateGuild(
         interaction.guild.id,
         { id: interaction.guild.id },
-        { $set: { automod: enable } }
+        { $set: { automod: 'Enabled | <:MeruYes:952435870491893810> ' } }
       );
 
       await interaction.reply({ embeds: [enable ? onEmbed : offEmbed] });
@@ -111,7 +111,7 @@ export default {
               )
             )
           )}\n\n${quote(bold(italic('The auto-mod features:')))}\n${italic(
-            'badwords, message-spam and invite-links'
+            'badwords, modlogs, msgspam and invlinks'
           )}\n\n${quote(bold(italic('Feature statuses:')))}\n${bold(
             `Message spam filter is currently set to ${modSpam ?? offStr}`
           )}\n${bold(
