@@ -1,6 +1,10 @@
 import { Client, Intents, Collection } from 'discord.js';
-import { existsSync, readdirSync } from 'node:fs';
 import Database from './db.js';
+import dotenv from 'dotenv'
+import { readdirSync, existsSync } from 'node:fs';
+import ascii from 'ascii-table'
+
+dotenv.config()
 
 const client = new Client({
   intents: [
@@ -11,18 +15,33 @@ const client = new Client({
   ]
 });
 
+  
+
 client.db = new Database();
 client.commands = new Collection();
 
-if (existsSync('./commands')) {
-  const files = readdirSync('./commands');
+const commandFolders = readdirSync('./commands');
 
-  for (const file of files) {
-    const { default: command } = await import(`./commands/${file}`);
+if (existsSync('./commands/')) {
+  const table = new ascii().setHeading("Commands", "Load Status");
+
+  for (const folder of commandFolders) {
+    const commandFiles = readdirSync(`./commands/${folder}`)
+      .filter((file) => file.endsWith('.js'));
+  
+    for (const file of commandFiles) {
+    const { default: command } = await import(`./commands/${folder}/${file}`);
 
     client.commands.set(command.data.name, command);
+
+    table.addRow(file, "✔️");
+
   }
 }
+console.log(table.toString());
+     }
+
+
 
 if (existsSync('./events')) {
   const files = readdirSync('./events');
