@@ -1,6 +1,5 @@
-import { MessageEmbed, Formatters } from 'discord.js';
+import { MessageEmbed} from 'discord.js';
 
-const { bold } = Formatters;
 
 export default {
   data: { name: 'ping', description: 'Pong!' },
@@ -22,6 +21,17 @@ export default {
 
     perf = performance.now() - perf;
 
+    const ping = Math.round(client.ws.ping);
+    const ping2 = reply.createdTimestamp - interaction.createdTimestamp;
+    const ping22 = Math.floor(perf);
+
+    const emoji = ping > 100 ? "<:yellow:957107445514264646>" : "<:online:952437416352964699>";
+  
+    const emoji2 = ping2 > 100 ? "<:yellow:957107445514264646>" : "<:online:952437416352964699>"
+    const emoji22 = ping22 > 100 ? "<:yellow:957107445514264646>" : "<:online:952437416352964699>"
+
+
+
     const embed_ = new MessageEmbed()
       .setColor('RANDOM')
       .setAuthor({
@@ -32,13 +42,13 @@ export default {
         })
       })
       .setDescription(
-        `${bold('Message latency')}\n<:online:952437416352964699> ${
-          reply.createdTimestamp - interaction.createdTimestamp
-        }ms\n${bold('API latency')}\n<:online:952437416352964699> ${Math.floor(
-          client.ws.ping
-        )}ms\n${bold(
-          'Database latency'
-        )}\n<:online:952437416352964699> ${Math.floor(perf)}ms`
+      `**Websocket**
+        ${emoji} ${ping} ms
+        **Database** 
+        ${emoji22} ${ping22} ms
+        **Message**
+        ${emoji2} ${ping2} ms
+        `
       )
       .setFooter({ text: 'Pong command info' })
       .setTimestamp();
