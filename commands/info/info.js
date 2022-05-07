@@ -1,5 +1,4 @@
-import { MessageEmbed} from 'discord.js';
-
+import { MessageEmbed } from 'discord.js';
 
 export default {
   data: { name: 'info', description: 'gets bot info' },
@@ -8,13 +7,14 @@ export default {
    * @param {import('discord.js').CommandInteraction} interaction
    */
   async execute(client, interaction) {
-    const embed = new MessageEmbed().setColor('RANDOM').setDescription('Getting info...');
+    const embed = new MessageEmbed()
+      .setColor('RANDOM')
+      .setDescription('Getting info...');
 
     const reply = await interaction.reply({
       embeds: [embed],
       fetchReply: true
     });
-
 
     const embed_ = new MessageEmbed()
       .setColor('RANDOM')
@@ -26,12 +26,8 @@ export default {
         })
       })
       .setDescription(
-            `**Bot Name: **Meru \n**Owner: **Moown \n**Total Categories: **3 \n**Total Commands: **${client.commands.size} \n**Users:** ${
-              client.users.cache.size
-            } \n**Servers:** ${client.guilds.cache.size} \n**Channels:** ${
-              client.channels.cache.size
-            }`
-          )
+        `**Bot Name: **Meru \n**Owner: **Moown \n**Total Categories: **3 \n**Total Commands: **${client.commands.size} \n**Users:** ${client.users.cache.size} \n**Servers:** ${client.guilds.cache.size} \n**Channels:** ${client.channels.cache.size}`
+      )
       .setFooter({ text: 'bot info' })
       .setTimestamp();
 

@@ -68,37 +68,35 @@ export default {
    */
   async execute(client, interaction) {
     const onEmbed = new MessageEmbed()
-  .setColor(0x57cf23)
-  .setDescription(
-    `${client.emotes} | ${bold(
-      italic('Enabled the Anti-Server-Raiding feature!')
-    )}\n\n${bold('What is the anti-raid feature?')}\n${italic(
-      'The anti-raid features are custom commands built to help prevent raids from taking place and stop them right on their tracks, from closing the entire server so no one can speak to join-bans to instantly ban users on join!'
-    )}\n\n${bold('Want to turn this feature off?')}\n${codeBlock(
-      'txt',
-      '/antiraid set mode:off'
-    )}`
-  );
-const offEmbed = new MessageEmbed()
-  .setColor(0xff3636)
-  .setDescription(
-    `${client.emotes} | ${bold(
-      italic('Disabled the Anti-Server-Raiding feature!')
-    )}\n\n${bold('What is the anti-raid feature?')}\n${italic(
-      'The anti-raid features are custom commands built to help prevent raids from taking place and stop them right on their tracks, from closing the entire server so no one can speak to join-bans to instantly ban users on join!'
-    )}\n\n${bold('Want to turn this feature on?')}\n${codeBlock(
-      'txt',
-      '/antiraid set mode:off'
-    )}`
-  );
-  
+      .setColor(0x57cf23)
+      .setDescription(
+        `${client.emotes} | ${bold(
+          italic('Enabled the Anti-Server-Raiding feature!')
+        )}\n\n${bold('What is the anti-raid feature?')}\n${italic(
+          'The anti-raid features are custom commands built to help prevent raids from taking place and stop them right on their tracks, from closing the entire server so no one can speak to join-bans to instantly ban users on join!'
+        )}\n\n${bold('Want to turn this feature off?')}\n${codeBlock(
+          'txt',
+          '/antiraid set mode:off'
+        )}`
+      );
+    const offEmbed = new MessageEmbed()
+      .setColor(0xff3636)
+      .setDescription(
+        `${client.emotes} | ${bold(
+          italic('Disabled the Anti-Server-Raiding feature!')
+        )}\n\n${bold('What is the anti-raid feature?')}\n${italic(
+          'The anti-raid features are custom commands built to help prevent raids from taking place and stop them right on their tracks, from closing the entire server so no one can speak to join-bans to instantly ban users on join!'
+        )}\n\n${bold('Want to turn this feature on?')}\n${codeBlock(
+          'txt',
+          '/antiraid set mode:off'
+        )}`
+      );
+
     const subcommandGroup = interaction.options.getSubcommandGroup(false);
     const subcommand = interaction.options.getSubcommand();
-    
 
     if (subcommandGroup === 'set') {
       if (subcommand === 'mode') {
-
         if (
           !interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])
         ) {
@@ -106,25 +104,23 @@ const offEmbed = new MessageEmbed()
             content: 'You need to be an admin or a mod to use this command.',
             ephemeral: true
           });
-  
+
           return;
         }
-        
 
         const enable = interaction.options.getString('mode') === 'on';
 
-        if(enable) {
+        if (enable) {
+          await client.db.updateGuild(
+            interaction.guild.id,
+            { id: interaction.guild.id },
+            { $set: { antiRaid: 'Enabled' } }
+          );
 
-        await client.db.updateGuild(
-          interaction.guild.id,
-          { id: interaction.guild.id },
-          { $set: { antiRaid: 'Enabled' } }
-        );
+          await interaction.reply({ embeds: [onEmbed] });
+        } else if (!enable) {
+          await interaction.reply({ embeds: [offEmbed] });
 
-        await interaction.reply({ embeds: [onEmbed] });
-        } else if(!enable) {
-          await interaction.reply({ embeds: [ offEmbed] });
-  
           await client.db.updateGuild(
             interaction.guild.id,
             { id: interaction.guild.id },
@@ -132,7 +128,6 @@ const offEmbed = new MessageEmbed()
           );
         }
       } else if (subcommand === 'role') {
-
         if (
           !interaction.member.permissions.any([ADMINISTRATOR, MANAGE_MESSAGES])
         ) {
@@ -140,7 +135,7 @@ const offEmbed = new MessageEmbed()
             content: 'You need to be an admin or a mod to use this command.',
             ephemeral: true
           });
-  
+
           return;
         }
 
@@ -155,7 +150,9 @@ const offEmbed = new MessageEmbed()
         const embed = new MessageEmbed()
           .setColor(0x57cf23)
           .setDescription(
-            `${client.emotes} | The lockdown role has successfully been set to ${role.toString()}`
+            `${
+              client.emotes
+            } | The lockdown role has successfully been set to ${role.toString()}`
           );
 
         await interaction.reply({ embeds: [embed] });

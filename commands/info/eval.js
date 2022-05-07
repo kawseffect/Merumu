@@ -1,75 +1,79 @@
-import { MessageEmbed} from 'discord.js';
+import { MessageEmbed, Formatters } from 'discord.js';
+import { Type } from '@sapphire/type';
+import { inspect } from 'node:util';
 
+const { codeBlock } = Formatters;
 
 export default {
-  data: 
-  { 
-      name: 'eval', 
-    description: 'evals imputted code',
-    options: [{
-
-        name: "code",
-        description: "type a code to execute",
+  data: {
+    name: 'eval',
+    description: 'evals inputted code',
+    options: [
+      {
+        name: 'code',
+        description: 'type a code to execute',
         type: 3,
         required: true
-
-}],
-   },
+      }
+    ]
+  },
   /**
    * @param {import('discord.js').Client} client
    * @param {import('discord.js').CommandInteraction} interaction
    */
   async execute(client, interaction) {
+    if (!client.owner.includes(interaction.member.user.id)) {
+      const embed = new MessageEmbed()
+        .setTitle('EVAL')
+        .setColor('RANDOM')
+        .setDescription(
+          "❌ You dont have perms to use this command. Only Owner's can use this command"
+        )
+        .setThumbnail(
+          interaction.user.displayAvatarURL({ dynamic: true, format: 'png' })
+        );
 
+      await interaction.reply({
+        embeds: [embed]
+      });
 
-    const nembed = new MessageEmbed()
-    .setTitle("EVAL").setColor("RANDOM")
-    .setDescription("❌ You dont have perms to use this command. Only Owner's can use this command")
-    .setThumbnail(interaction.member.user.displayAvatarURL())
-    
+      return;
+    }
 
-if (!client.owner.includes(interaction.member.user.id)) return interaction.followUp({
-    embeds: [nembed]
-});
+    const toEval = interaction.options.getString('code');
 
-let toEval = interaction.options.getString("code")
+    let timer = performance.now(),
+      type_,
+      evaluated;
 
+    try {
+      evaluated = eval(toEval);
+
+      if (evaluated instanceof Promise) evaluated = await evaluated;
+
+      timer = performance.now() - timer;
+
+      if (typeof evaluated !== 'string')
+        evaluated = inspect(evaluated, { depth: 0 });
+
+      if (evaluated.length > 4_000) evaluated = evaluated.slice(0, 4_000);
+    } catch (err) {
+      evaluated = inspect(err, { depth: 0 });
+      timer = performance.now() - timer;
+    }
+
+    timer = Math.floor(timer);
+    type_ = new Type(evaluated).toString();
 
     const embed = new MessageEmbed()
-        .setTitle("EVAL").setColor("RANDOM")
-        .setDescription("❌ Error: `Cannot evaluate nothing`")
-        .setThumbnail(interaction.member.user.displayAvatarURL())
-        
-    let evaluated = eval(toEval, {
-        depth: 0
-    });
+      .setColor('RANDOM')
+      .setTitle(`Evaluated in ${timer} ms`)
+      .setDescription(codeBlock('js', evaluated))
+      .addField('Type', codeBlock('ts', type_))
+      .setThumbnail(
+        interaction.user.displayAvatarURL({ dynamic: true, format: 'png' })
+      );
 
-    if (!toEval) return interaction.reply({
-        embeds: [embed]
-    })
-    
-    const embed1 = new MessageEmbed()
-        .setTitle("EVAL").setColor("RANDOM")
-        .setDescription("❌ Error: `Request is too long.`")
-        .setThumbnail(interaction.member.user.displayAvatarURL())
-        
-
-    if (evaluated.length > 1950) return interaction.reply({
-        embeds: [embed1]
-    })
-
-    const embed2 = new MessageEmbed()
-        .setColor("RANDOM")
-        .setTitle(`Evaluated in ${Math.round(client.ws.ping)}ms`)
-        .addField(":inbox_tray: Input", `\`\`\`js\n${toEval}\n\`\`\``)
-        .addField(":outbox_tray: Output", `\`\`\`js\n${evaluated}\n\`\`\``)
-        .addField('Type', `\`\`\`xl\n${(typeof evaluated).substr(0, 1).toUpperCase() + (typeof evaluated).substr(1)}\n\`\`\``)
-        
-        .setThumbnail(interaction.member.user.displayAvatarURL())
-        
-    interaction.reply({
-        embeds: [embed2]
-    });
-
-}
-}
+    await interaction.reply({ embeds: [embed] });
+  }
+};

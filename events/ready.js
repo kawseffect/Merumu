@@ -1,6 +1,5 @@
 import gradient from 'gradient-string';
 
-
 export default {
   name: 'ready',
   once: true,
@@ -60,6 +59,7 @@ export default {
     }, 10000);
 
     client.user.setActivity({ name: `/ | Mooni <3`, type: 'LISTENING' });
-  console.log(gradient('red', 'orange')(`Logged in as ${client.user.tag}`))
+
+    console.log(gradient('red', 'orange')(`Logged in as ${client.user.tag}`));
   }
 };
